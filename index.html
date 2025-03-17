@@ -1,23 +1,49 @@
-<script type="module">
-  import * as THREE from 'https://threejs.org/build/three.module.js';
-  import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
-  
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-  
-  // Загрузка 3D-модели
-  const loader = new GLTFLoader();
-  loader.load('scene.glb', function (gltf) {
-      scene.add(gltf.scene);
-      camera.position.z = 5;
-      function animate() {
-          requestAnimationFrame(animate);
-          renderer.render(scene, camera);
-      }
-      animate();
-  });
-  </script>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.module.js';
+        import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.110/examples/jsm/loaders/FBXLoader.js';
+
+        let scene, camera, renderer;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Добавляем освещение
+            const light = new THREE.AmbientLight(0xffffff, 1);
+            scene.add(light);
+
+            // Загрузка модели FBX
+            const loader = new FBXLoader();
+            loader.load('monitor.fbx', function (object) {
+                object.scale.set(0.1, 0.1, 0.1); // Уменьшаем модель
+                scene.add(object);
+            });
+
+            camera.position.z = 5;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+</html>
